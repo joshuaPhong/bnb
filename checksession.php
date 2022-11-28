@@ -8,11 +8,12 @@ $_SESSION['username'] = 'Test';
 //end of overrides
 
 function isAdmin() {
- if (($_SESSION['loggedin'] == 1) and ($_SESSION['userid'] == 1))
-     return true;
+ if (($_SESSION['loggedin'] == 1) and ($_SESSION['userid'] == 1)) 
+     return TRUE;
  else 
-     return false;
+     return FALSE;
 }
+
 //function to check if the user is logged else send to the login page 
 function checkUser() {
 return true;
