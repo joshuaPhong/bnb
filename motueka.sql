@@ -73,5 +73,6 @@ CREATE TABLE IF NOT EXISTS booking (
   FOREIGN KEY (roomID) REFERENCES room(roomID)
 ) AUTO_INCREMENT=1;
 
+-- date format is year month day
 INSERT INTO `booking`(`bookingID`, `checkindate`, `checkoutdate`, `phone`, `extras`, `review`, `customerID`, `roomID`) VALUES ('1','1973-02-02','2022-02-28','0212593006','whatevar','more whatevers','2','2');
 INSERT INTO `booking`(`bookingID`, `checkindate`, `checkoutdate`, `phone`, `extras`, `review`, `customerID`, `roomID`) VALUES ('2','1973-02-02','2022-02-28','0212593006','tots whatevar','more whatever whatevers','3','3');
