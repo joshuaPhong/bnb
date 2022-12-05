@@ -30,8 +30,8 @@ $rowcount = mysqli_num_rows($result);
 <table border="1">
     <thead>
         <tr>
-            <th>Booking ID</th>
-            <th>Customer ID</th>
+            <th>Booking (room, dates)</th>
+            <th>Customer </th>
             <th>Action</th>
         </tr>
     </thead>
@@ -47,7 +47,8 @@ if ($rowcount > 0) {
       //check if we have permission to modify data
       if (isAdmin()) {
         echo         '<a href="editbookings.php?id='.$id.'">[edit]</a>';
-        echo         '<a href="deletebookings.php?id='.$id.'">[delete]</a></td>';
+        echo         '<a href="deletebookings.php?id='.$id.'">[delete]</a>';
+        echo '<a href="reviews.php?id='.$id.'">[manage reviews]</a></td>';
       }
       echo '</tr>'.PHP_EOL;
    }
