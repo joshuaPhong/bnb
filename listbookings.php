@@ -21,7 +21,7 @@ if (mysqli_connect_errno()) {
 }
 
 //prepare a query and send it to the server
-$query = 'SELECT bookingID, customerID FROM booking ORDER BY bookingID';
+$query = 'SELECT * FROM booking, room, customer WHERE booking.roomID = room.roomID AND booking.customerID = customer.customerID ORDER BY bookingID';
 $result = mysqli_query($DBC, $query);
 $rowcount = mysqli_num_rows($result);
 ?>
@@ -41,7 +41,7 @@ $rowcount = mysqli_num_rows($result);
     if ($rowcount > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $id = $row['bookingID'];
-            echo '<tr><td>' . $row['bookingID'] . '</td><td>' . $row['customerID'] . '</td>';
+            echo '<tr><td>' . $row['roomname'] . ", " . $row['checkindate'] . ", " . $row['checkoutdate'] . '</td><td>' . $row['lastname'] . ", " . $row['firstname'] . '</td>';
             echo     '<td><a href="viewbookings.php?id=' . $id . '">[view]</a>';
 
             //check if we have permission to modify data
