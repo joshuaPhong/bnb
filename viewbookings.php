@@ -70,7 +70,7 @@ else
 mysqli_free_result($result); //free any memory used by the query
 mysqli_close($db_connection); //close the connection once done
 ?>
-    </table>
+
 </body>
 
 </html>

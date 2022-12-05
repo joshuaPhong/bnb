@@ -1,8 +1,5 @@
-<h1>Privacy Page</h1>
-<!-- link to the home page -->
-<p>
-<h2><a href="index.php">[Return to the main menu]</a></h2>
-</p>
+<h1>Privacy statement</h1>
+
 <!-- the contents of the page -->
 <div>
     <p>
