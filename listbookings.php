@@ -21,7 +21,7 @@ if (mysqli_connect_errno()) {
 }
 
 //prepare a query and send it to the server
-$query = 'SELECT bookingID,customerID FROM booking ORDER BY bookingID';
+$query = 'SELECT bookingID, customerID FROM booking ORDER BY bookingID';
 $result = mysqli_query($DBC,$query);
 $rowcount = mysqli_num_rows($result); 
 ?>
