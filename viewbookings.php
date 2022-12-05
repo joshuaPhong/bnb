@@ -1,8 +1,15 @@
 <!DOCTYPE HTML>
 <?php
+include "header.php";
+include "menu.php";
 include "checksession.php";
-//checkUser();
 //loginStatus(); 
+loginStatus(); //show the current login status
+//checkUser();
+echo '<div id="site_content">';
+include "sidebar.php";
+
+echo '<div id="content">';
 ?>
 <html>
 
