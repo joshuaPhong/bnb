@@ -4,10 +4,15 @@ include "checksession.php";
 //checkUser();
 //loginStatus(); 
 ?>
-<html><head><title>View Customer</title> </head>
- <body>
+<html>
 
-<?php
+<head>
+    <title>View Customer</title>
+</head>
+
+<body>
+
+    <?php
 include "config.php"; //load in any variables
 
 $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
@@ -33,9 +38,10 @@ $query = 'SELECT * FROM customer WHERE customerid='.$id;
 $result = mysqli_query($db_connection, $query);
 $rowcount = mysqli_num_rows($result); 
 ?>
-<h1>Customer Details View</h1>
-<h2><a href='listcustomers.php'>[Return to the Customer listing]</a><a href='index.php'>[Return to the main page]</a></h2>
-<?php
+    <h1>Customer Details View</h1>
+    <h2><a href='listcustomers.php'>[Return to the Customer listing]</a><a href='index.php'>[Return to the main
+            page]</a></h2>
+    <?php
 
 //makes sure we have the customer
 if ($rowcount > 0)
@@ -54,7 +60,7 @@ else
 mysqli_free_result($result); //free any memory used by the query
 mysqli_close($db_connection); //close the connection once done
 ?>
-</table>
+    </table>
 </body>
+
 </html>
-  
