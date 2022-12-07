@@ -8,13 +8,75 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
     <title>Make a Booking</title>
+    <!-- These are the jquery libraries. styling and javascript code -->
+    <link rel="stylesheet"
+        href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet"
+        href="/resources/demos/style.css">
+    <!-- style for jquery selectmenu -->
+    <style>
+    fieldset {
+        border: 1;
+    }
+
+    label {
+        display: block;
+        margin: 30px 0 0 0;
+    }
+
+    .overflow {
+        height: 200px;
+    }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="
+        crossorigin="anonymous"></script>
+    <script>
+    // this is the jquery datepicker function. uses the class .datepicker 
+    // min date sets the minimum the date can be to today.
+    // no booking in the past \
+    // we should validate for checkout > checkin
+    $(function() {
+        $(".datepicker").datepicker({
+            minDate: 0
+        });
+    });
+    </script>
+    <script>
+    $(function() {
+        $("#room").selectmenu();
+    });
+    </script>
 </head>
 <!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
 
 <body>
+
+    <?php
+    include "cleaninput.php"; // cleans up the user input for posting
+
+    include "config.php"; //load in any variables
+    $DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
+
+
+    //check if the connection was good
+    if (mysqli_connect_errno()) {
+        echo "Error: Unable to connect to MySQL. " . mysqli_connect_error();
+        exit; //stop processing the page further
+    }
+
+    //prepare a query and send it to the server
+    $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
+    $result = mysqli_query($DBC, $query);
+    $rowcount = mysqli_num_rows($result);
+
+    ?>
     <!-- page heading and links to other pages -->
     <h1>Make a Booking</h1>
-    <p><a href='listCurrentBookings.html'>[Return to the Bookings listing]</a><a href="index.html">[Return to Main
+    <p><a href='listbookings.php'>[Return to the Bookings listing]</a><a href="index.php">[Return to Main
             Page]</a>
     </p>
     <!-- the firat part of the page is a fortm for booking -->
@@ -22,22 +84,37 @@
         <legend>Customer ID#</legend>
         <!-- not connected yet -->
         <form method="POST"
-            action="">
+            action="makeabooking.php">
             <!-- a drop down menu for the customer to select their choice of room with two illistrative peices of data -->
             <p>
+
+
                 <label for="room">Please select a room (name, type, beds):</label>
-                <select id="room"
-                    name="room">
-                    <option value="kelly">Kelly, S, 5</option>
-                    <option value="herman">Herman, D</option>
+                <select name="room"
+                    id="room">
+                    <?php
+                    //makes sure we have rooms
+                    if ($rowcount > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $id = $row['roomID'];
+                            echo "<option>" . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
+                        }
+                    }
+
+                    mysqli_free_result($result); //free any memory used by the query
+                    mysqli_close($DBC); //close the connection once done
+                    ?>
+
                 </select>
+
                 <label>*</label>
             </p>
             <!-- a date picker for the customer to select thier checkin date. this is a required field/ client side data validation -->
             <!-- there is no validation to make sure the date is within a suitable range, i.e. not the past -->
             <p>
                 <label for="checkin">Checkin date:</label>
-                <input type="date"
+                <input class="datepicker"
+                    type="text"
                     id="checkin"
                     name="checkin"
                     required>
@@ -46,7 +123,8 @@
             <!-- a date picker for the check out date, is required* -->
             <p>
                 <label for="checkout">Checkout Date: </label>
-                <input type="date"
+                <input class="datepicker"
+                    type="text"
                     id="checkout"
                     name="checkout"
                     required>

@@ -2,7 +2,32 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+        content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
     <title>Edit a booking</title>
+    <!-- These are the jquery libraries. styling and javascript code -->
+    <link rel="stylesheet"
+        href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet"
+        href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="
+        crossorigin="anonymous"></script>
+    <script>
+    // this is the jquery datepicker function. uses the class .datepicker 
+    // min date sets the minimum the date can be to today.
+    //  no min date as we may need to update a booking for yesyerday...
+    // we should validate for checkout > checkin
+    $(function() {
+        $(".datepicker").datepicker({});
+    });
+    </script>
 </head>
 
 <body>
@@ -128,7 +153,8 @@
         </p>
         <p>
             <label for="checkindate">Check in date</label>
-            <input type="date"
+            <input class="datepicker"
+                type="text"
                 id="checkindate"
                 name="checkindate"
                 value="<?php echo $row['checkindate']; ?>"
@@ -136,7 +162,8 @@
         </p>
         <p>
             <label for="checkoutdate">Check out date</label>
-            <input type="date"
+            <input class="datepicker"
+                type="text"
                 id="checkoutdate"
                 name="checkoutdate"
                 value="<?php echo $row['checkoutdate']; ?>"
