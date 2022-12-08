@@ -36,10 +36,19 @@
         $("#room").selectmenu();
     });
     </script>
-
+    <!-- script for the xmlhttp request. customer search -->
     <script>
+    // new object
     let xhrequest = new XMLHttpRequest();
-    xhrequest.open("GET", )
+    xhrequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+
+        }
+    }
+    //  open connection
+    xhrequest.open("GET", "url/customer search");
+    // send request to the server 
+    xhrequest.send();
     </script>
     <!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
 
