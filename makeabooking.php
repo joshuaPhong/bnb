@@ -13,21 +13,7 @@
         href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet"
         href="/resources/demos/style.css">
-    <!-- style for jquery selectmenu -->
-    <style>
-    fieldset {
-        border: 1;
-    }
 
-    label {
-        display: block;
-        margin: 30px 0 0 0;
-    }
-
-    .overflow {
-        height: 200px;
-    }
-    </style>
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
         crossorigin="anonymous"></script>
@@ -50,27 +36,84 @@
         $("#room").selectmenu();
     });
     </script>
-</head>
-<!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
+
+    <script>
+    let xhrequest = new XMLHttpRequest();
+    xhrequest.open("GET", )
+    </script>
+    <!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
 
 <body>
-
     <?php
-    include "cleaninput.php"; // cleans up the user input for posting
 
     include "config.php"; //load in any variables
-    $DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
-
-
-    //check if the connection was good
+    include "cleaninput.php";
+    $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
     if (mysqli_connect_errno()) {
-        echo "Error: Unable to connect to MySQL. " . mysqli_connect_error();
-        exit; //stop processing the page further
+        echo  "Error: Unable to connect to MySQL. " . mysqli_connect_error();
+        exit;
+    };
+
+    //the data was sent using a form therefore you use the $_POST instead of $_GET
+    //check if you are saving data first by checking if the submit button exists in the array
+    if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] == 'Add')) {
+        // validate incoming data - only the first field is done for you in this example - rest is up to you to do
+        $error = 0; // set an error flag
+        $msg = 'Error: ';
+        // firstname
+        if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
+            $fn = cleaninput($_POST['checkindate']);
+        } else {
+            $error++; // increment the error flag
+            $msg .= 'Invalid check in date '; // append error message
+            $checkin = ' ';
+        }
+        // lastname
+        if (isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])) {
+            $fn = cleaninput($_POST['checkoutdate']);
+        } else {
+            $error++; // increment the error flag
+            $msg .= 'Invalid check in date '; // append error message
+            $checkout = ' ';
+        }
+        // email
+        if (isset($_POST['phone']) and !empty($_POST['phone'])) {
+            $fn = cleaninput($_POST['phone']);
+        } else {
+            $error++; // increment the error flag
+            $msg .= 'Invalid phone number '; // append error message
+            $phone = ' ';
+        }
+        // username
+        if (isset($_POST['extras']) and is_string($_POST['extras'])) {
+            $fn = cleaninput($_POST['extras']);
+        } else {
+            $error++; // increment the error flag
+            $msg .= 'Invalid extras '; // append error message
+            $extras = ' ';
+        }
+
+        //role - not in the form so declared here
+        $role = 1;
+
+        // save the member data if the error flag is still clear
+        if ($error == 0) {
+            $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone) VALUES (?,?,?,?)";
+            $stmt = mysqli_prepare($db_connection, $query); //prepare the query
+            mysqli_stmt_bind_param($stmt, 'sssi', $checkin, $checkout, $extras, $phone);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            echo "<h2>booking saved</h2>";
+        } else {
+            echo "<h2>$msg</h2>";
+        }
     }
+    ?>
+    <?php
 
     //prepare a query and send it to the server
     $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
-    $result = mysqli_query($DBC, $query);
+    $result = mysqli_query($db_connection, $query);
     $rowcount = mysqli_num_rows($result);
 
     ?>
@@ -81,7 +124,7 @@
     </p>
     <!-- the firat part of the page is a fortm for booking -->
     <fieldset>
-        <legend>Customer ID#</legend>
+
         <!-- not connected yet -->
         <form method="POST"
             action="makeabooking.php">
@@ -96,13 +139,13 @@
                     //makes sure we have rooms
                     if ($rowcount > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
-                            $id = $row['roomID'];
+                            //   $id = $row['roomID'];
                             echo "<option>" . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
                         }
                     }
 
                     mysqli_free_result($result); //free any memory used by the query
-                    mysqli_close($DBC); //close the connection once done
+                    mysqli_close($db_connection); //close the connection once done
                     ?>
 
                 </select>
@@ -112,21 +155,21 @@
             <!-- a date picker for the customer to select thier checkin date. this is a required field/ client side data validation -->
             <!-- there is no validation to make sure the date is within a suitable range, i.e. not the past -->
             <p>
-                <label for="checkin">Checkin date:</label>
+                <label for="checkindate">Checkin date:</label>
                 <input class="datepicker"
                     type="text"
-                    id="checkin"
-                    name="checkin"
+                    id="checkindate"
+                    nacheckoutdateme="checkindate"
                     required>
                 <label>*</label>
             </p>
             <!-- a date picker for the check out date, is required* -->
             <p>
-                <label for="checkout">Checkout Date: </label>
+                <label for="checkoutdate">Checkout Date: </label>
                 <input class="datepicker"
                     type="text"
-                    id="checkout"
-                    name="checkout"
+                    id="checkoutdate"
+                    name="checkoutdate"
                     required>
                 <label>*</label>
             </p>
@@ -136,8 +179,9 @@
                 <input type="tel"
                     id="phone"
                     name="phone"
-                    placeholder="###-###-####"
-                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                    placeholder="##########"
+                    pattern="[0-9]{10}"
+                    required>
             </p>
             <!-- a tect area for the customer to inform staff of any special requirements that they might have. it has no minlength, is not a required feild but there is a limit on how much text can be entered. about 200 words  -->
             <p>
@@ -166,119 +210,42 @@
     <!--  part two of the page allows the user to search the site for rooms that are available for booking. it contains a form to set the search parameters and a table to display the reults -->
     <h2>Search for room availability</h2>
     <!-- the form. two date pickers to set the range of the search and a button to submit the results. both date pickers are required, this will set the data range provide to the table -->
-    <form>
-        <p>
-            <label for="startdate">Start date:</label>
-            <input type="date"
-                id="startdate"
-                name="startdate"
-                required>
-            <label>*</label>
-            <label for="enddate">End Date: </label>
-            <input type="date"
-                id="enddate"
-                name="enddate"
-                required>
-            <label>*</label>
-            <input type="submit"
-                name="submit"
-                value="Search availability">
-        </p>
-    </form>
-    <!-- a table to display the results of the search. The data displayed is indicitive only/ for display puposes as the pages are not connected to a DB at present -->
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Room #</th>
-                <th>Room name</th>
-                <th>Room type</th>
-                <th>Beds</th>
-            </tr>
-        </thead>
-        <tr>
-            <td>1</td>
-            <td>Kellie</td>
-            <td>S</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Herman</td>
-            <td>D</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>Scarlett</td>
-            <td>D</td>
-            <td>2</td>
-        <tr>
-            <td>4</td>
-            <td>Jelani</td>
-            <td>S</td>
-            <td>2</td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>Sonya</td>
-            <td>S</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>Miranda</td>
-            <td>S</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>Helen</td>
-            <td>S</td>
-            <td>2</td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>Octavia</td>
-            <td>D</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>Gretchen</td>
-            <td>D</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>10</td>
-            <td>Bernard</td>
-            <td>S</td>
-            <td>5</td>
-        </tr>
-        <tr>
-            <td>11</td>
-            <td>Dacey</td>
-            <td>D</td>
-            <td>2</td>
-        </tr>
-        <tr>
-            <td>12</td>
-            <td>Preston</td>
-            <td>D</td>
-            <td>2</td>
-        </tr>
-        <tr>
-            <td>13</td>
-            <td>Dane</td>
-            <td>S</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>14</td>
-            <td>Cole</td>
-            <td>S</td>
-            <td>1</td>
-        </tr>
-    </table>
+    <fieldset>
+        <form>
+            <p>
+                <label for="startdate">Start date:</label>
+                <input class="datepicker"
+                    type="text"
+                    id="startdate"
+                    name="startdate"
+                    required>
+                <label>*</label>
+                <label for="enddate">End Date: </label>
+                <input class="datepicker"
+                    type="text"
+                    id="enddate"
+                    name="enddate"
+                    required>
+                <label>*</label>
+                <input type="submit"
+                    name="submit"
+                    value="Search availability">
+            </p>
+        </form>
+        <!-- a table to display the results of the search. The data displayed is indicitive only/ for display puposes as the pages are not connected to a DB at present -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Room #</th>
+                    <th>Room name</th>
+                    <th>Room type</th>
+                    <th>Beds</th>
+                </tr>
+            </thead>
+        </table>
+    </fieldset>
+
+
 
 </body>
 
