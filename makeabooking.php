@@ -38,17 +38,48 @@
     </script>
     <!-- script for the xmlhttp request. customer search -->
     <script>
-    // new object
-    let xhrequest = new XMLHttpRequest();
-    xhrequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-
+    function searchResult(searchstr) {
+        if (searchstr.length == 0) {
+            return
         }
+        // new object
+        let xhrequest = new XMLHttpRequest();
+        xhrequest.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var mbrs = JSON.parse(this.responseText); // turn json into javascipt
+                var tbl = document.getElementById("tblrooms"); // find the table in the html
+                // clear the table rows from earlier searches
+                var rowCount = tbl.rows.length;
+                for (var i = 0; i < mbrs.length; i++) {
+                    // delete row
+                    tbl.deleteRow(1);
+                }
+
+                // populate the table. mbrs.length is the size of the array
+                for (var i = 0; i < mbrs.length; i++) {
+                    var rid = mbrs[i]['roomID'];
+                    var rn = mbrs[i]['roomname'];
+                    var rt = mbrs[i]['roomtype'];
+                    var b = mbrs[i]['beds'];
+
+                    //create the table. a table row with four cells.
+                    tr = tbl.insertRow(-1);
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = rid;
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = rn;
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = rt;
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = b;
+                }
+            }
+        }
+        //  open connection
+        xhrequest.open("GET", "roomsearch.php?sq=" + searchstr, true);
+        // send request to the server 
+        xhrequest.send();
     }
-    //  open connection
-    xhrequest.open("GET", "url/customer search");
-    // send request to the server 
-    xhrequest.send();
     </script>
     <!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
 
@@ -238,11 +269,13 @@
                 <label>*</label>
                 <input type="submit"
                     name="submit"
-                    value="Search availability">
+                    value="Search availability"
+                    onclick="searchResult(this.value)">
             </p>
         </form>
-        <!-- a table to display the results of the search. The data displayed is indicitive only/ for display puposes as the pages are not connected to a DB at present -->
-        <table border="1">
+        <!-- a table to display the results of the search. -->
+        <table id="tblrooms"
+            border="1">
             <thead>
                 <tr>
                     <th>Room #</th>
