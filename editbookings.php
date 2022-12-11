@@ -83,7 +83,7 @@
 
         //save the room data if the error flag is still clear and room id is > 0
         if ($error == 0 and $id > 0) {
-            $query = "UPDATE booking, room SET roomname=?,roomtype=?,checkindate=?,checkoutdate=?,phone=?,extras=?,review=?,beds=? WHERE bookingID=? ";
+            $query = "UPDATE booking, room SET roomname=?,roomtype=?,checkindate=?,checkoutdate=?,phone=?,extras=?,review=?,beds=? WHERE booking.bookingID=? ";
             $stmt = mysqli_prepare($db_connection, $query); //prepare the query
             mysqli_stmt_bind_param($stmt, 'sssssssii', $roomname, $roomtype, $checkindate, $checkoutdate, $phone, $extras, $review, $beds,  $id);
             mysqli_stmt_execute($stmt);
