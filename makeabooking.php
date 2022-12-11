@@ -11,8 +11,7 @@
     <!-- These are the jquery libraries. styling and javascript code -->
     <link rel="stylesheet"
         href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet"
-        href="/resources/demos/style.css">
+
 
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
@@ -47,6 +46,7 @@
         xhrequest.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var mbrs = JSON.parse(this.responseText); // turn json into javascipt
+                console.log(JSON.parse(this.responseText));
                 var tbl = document.getElementById("tblrooms"); // find the table in the html
                 // clear the table rows from earlier searches
                 var rowCount = tbl.rows.length;
@@ -77,6 +77,7 @@
         }
         //  open connection
         xhrequest.open("GET", "roomsearch.php?sq=" + searchstr, true);
+        xhrequest.responseType = 'json';
         // send request to the server 
         xhrequest.send();
     }
@@ -199,7 +200,7 @@
                 <input class="datepicker"
                     type="text"
                     id="checkindate"
-                    nacheckoutdateme="checkindate"
+                    name="checkindate"
                     required>
                 <label>*</label>
             </p>
