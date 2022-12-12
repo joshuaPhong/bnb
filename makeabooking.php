@@ -26,7 +26,8 @@
     // we should validate for checkout > checkin
     $(function() {
         $(".datepicker").datepicker({
-            minDate: 0
+            minDate: 0,
+            dateFormat: 'yy-mm-dd'
         });
     });
     </script>
@@ -139,9 +140,9 @@
 
         // save the member data if the error flag is still clear
         if ($error == 0) {
-            $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone) VALUES (?,?,?,?)";
+            $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone, customerID, roomID) VALUES (?,?,?,?,?,?)";
             $stmt = mysqli_prepare($db_connection, $query); //prepare the query
-            mysqli_stmt_bind_param($stmt, 'sssi', $checkin, $checkout, $extras, $phone);
+            mysqli_stmt_bind_param($stmt, 'ssssss', $checkin, $checkout, $extras, $phone, $roomID, $customerID);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             echo "<h2>booking saved</h2>";
@@ -180,7 +181,7 @@
                     //makes sure we have rooms
                     if ($rowcount > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
-                            //   $id = $row['roomID'];
+                            $roomID = $row['roomID'];
                             echo "<option>" . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
                         }
                     }
