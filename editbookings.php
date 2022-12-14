@@ -207,6 +207,7 @@
             name="submit"
             value="Update">
         <input type="reset"
+            name="reset"
             value="Clear Form">
     </form>
     <?php

@@ -11,8 +11,6 @@
     <!-- These are the jquery libraries. styling and javascript code -->
     <link rel="stylesheet"
         href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
-
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
         crossorigin="anonymous"></script>
@@ -27,6 +25,7 @@
     $(function() {
         $(".datepicker").datepicker({
             minDate: 0,
+            // same format as sql
             dateFormat: 'yy-mm-dd'
         });
     });
@@ -134,15 +133,20 @@
             $msg .= 'Invalid extras '; // append error message
             $extras = ' ';
         }
+        $roomID = cleanInput('roomID');
 
         //role - not in the form so declared here
         $role = 1;
 
         // save the member data if the error flag is still clear
         if ($error == 0) {
-            $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone, customerID, roomID) VALUES (?,?,?,?,?,?)";
+            $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone, booking.customerID, roomID) VALUES (?,?,?,?,?,?)";
+
+
             $stmt = mysqli_prepare($db_connection, $query); //prepare the query
             mysqli_stmt_bind_param($stmt, 'ssssss', $checkin, $checkout, $extras, $phone, $roomID, $customerID);
+
+
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             echo "<h2>booking saved</h2>";
@@ -150,16 +154,19 @@
             echo "<h2>$msg</h2>";
         }
     }
-    ?>
-    <?php
-
-    //prepare a query and send it to the server
-    $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
-    $result = mysqli_query($db_connection, $query);
-    $rowcount = mysqli_num_rows($result);
 
     ?>
-    <!-- page heading and links to other pages -->
+
+    <p>
+        <?php
+
+        //prepare a query and send it to the server
+        $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
+        $result = mysqli_query($db_connection, $query);
+        $rowcount = mysqli_num_rows($result);
+
+        ?>
+        <!-- page heading and links to other pages -->
     <h1>Make a Booking</h1>
     <p><a href='listbookings.php'>[Return to the Bookings listing]</a><a href="index.php">[Return to Main
             Page]</a>
