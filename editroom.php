@@ -10,6 +10,12 @@
     <?php
   include "config.php"; //load in any variables
   include "cleaninput.php";
+  include "header.php";
+  include "checksession.php";
+  include "menu.php";
+  loginStatus(); //show the current login status
+  echo '<div id="site_content">';
+  include "sidebar.php";
 
   $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
   $error = 0;
@@ -84,6 +90,7 @@
                 name="roomname"
                 minlength="5"
                 maxlength="50"
+                size="50"
                 value="<?php echo $row['roomname']; ?>"
                 required>
         </p>
@@ -92,9 +99,9 @@
             <input type="text"
                 id="description"
                 name="description"
-                size="100"
+                size="50"
                 minlength="5"
-                maxlength="200"
+                maxlength="100"
                 value="<?php echo $row['description']; ?>"
                 required>
         </p>
@@ -131,6 +138,8 @@
     echo "<h2>room not found with that ID</h2>"; //simple error feedback
   }
   mysqli_close($db_connection); //close the connection once done
+  echo '</div>';
+  include "footer.php";
   ?>
 </body>
 

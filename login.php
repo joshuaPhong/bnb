@@ -14,7 +14,7 @@ if (isset($_POST['email'])) {
 
     //prepare a query and send it to the server 
     $stmt = mysqli_stmt_init($db_connection);
-    mysqli_stmt_prepare($stmt, "SELECT memberID, password FROM member WHERE email=?");
+    mysqli_stmt_prepare($stmt, "SELECT customerID, password FROM customer WHERE email=?");
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $customerID, $hashpassword);
