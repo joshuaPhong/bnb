@@ -260,7 +260,8 @@
     <h2>Search for room availability</h2>
     <!-- the form. two date pickers to set the range of the search and a button to submit the results. both date pickers are required, this will set the data range provide to the table -->
     <fieldset>
-        <form>
+        <form method="$_POST"
+            action="makeabooking.php">
             <p>
                 <label for="startdate">Start date:</label>
                 <input class="datepicker"
