@@ -10,7 +10,7 @@ session_start();
 
 function isAdmin()
 {
-    if (($_SESSION['loggedin'] == 1) and ($_SESSION['userid'] == 1))
+    if (($_SESSION['loggedin'] == 1) and ($_SESSION['customerid'] == 1))
         return TRUE;
     else
         return FALSE;
@@ -64,5 +64,5 @@ function logout()
     $_SESSION['customerid'] = -1;
     $_SESSION['username'] = '';
     $_SESSION['URI'] = '';
-    header('Location: http://localhost/bnb/login.php', true, 303);
+    header('Location: http://localhost/bnb/index.php', true, 303);
 }

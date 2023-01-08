@@ -9,7 +9,7 @@ echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
-loginStatus(); //show the current login status
+
 // access the database constants
 include "config.php";
 // connect to the database using the constants
@@ -19,7 +19,7 @@ if (mysqli_connect_errno()) {
     exit;
 }
 // if the login form has been filled in 
-if (isset($_POST['username'])) {
+if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $hashpassword = password_hash($password, PASSWORD_DEFAULT);
@@ -46,8 +46,15 @@ if (isset($_POST['username'])) {
             echo '<p>Username/password combination is wrong!</p>';
         }
     }
+    loginStatus(); //show the current login status
     echo '<p><a href="index.php">Return to the menu</a></p>';
 }
+if (isset($_POST['logout'])) {
+    logout();
+    loginStatus(); //show the current login status
+    exit();
+}
+
 
 mysqli_close($db_connection);
 
@@ -66,7 +73,7 @@ mysqli_close($db_connection);
 
 <body>
     <h1>Login Page</h1>
-    <a href="index.php">Main menu</a>
+
     <form method="POST"
         action="login.php">
 
@@ -78,6 +85,7 @@ mysqli_close($db_connection);
             size="30"
             required>
         <br>
+        <br>
         <label for="password">Password</label>
         <input type="password"
             name="password"
@@ -87,10 +95,18 @@ mysqli_close($db_connection);
             max="30"
             required>
         <br>
+        <br>
         <input type="submit"
             name="submit"
             value="Login">
 
+    </form>
+    <br>
+    <form action="login.php"
+        method="post">
+        <input type="submit"
+            name="logout"
+            value="logout">
     </form>
 </body>
 

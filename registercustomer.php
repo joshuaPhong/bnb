@@ -45,11 +45,13 @@
     $password = cleanInput($_POST['password']);
     $hashpassword = password_hash($password, PASSWORD_DEFAULT);
 
+    $role = cleanInput($_POST['role']);
+
     //save the customer data if the error flag is still clear
     if ($error == 0) {
-      $query = "INSERT INTO customer (firstname,lastname,email,password) VALUES (?,?,?,?)";
+      $query = "INSERT INTO customer (firstname,lastname,email,password, role) VALUES (?,?,?,?,?)";
       $stmt = mysqli_prepare($db_connection, $query); //prepare the query		
-      mysqli_stmt_bind_param($stmt, 'ssss', $firstname, $lastname, $email, $hashpassword);
+      mysqli_stmt_bind_param($stmt, 'ssssi', $firstname, $lastname, $email, $hashpassword, $role);
       mysqli_stmt_execute($stmt);
       mysqli_stmt_close($stmt);
       echo "<h2>customer saved</h2>";
@@ -101,6 +103,15 @@
                 maxlength="32"
                 required>
         </p>
+        <P>
+            <label for="role">Role</label>
+            <select name="role"
+                id="role">
+                <option value="9">Admin</option>
+                <option value="1">Member</option>
+                <option value="0">Casual</option>
+            </select>
+        </P>
 
         <input type="submit"
             name="submit"
