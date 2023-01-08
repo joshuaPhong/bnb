@@ -39,18 +39,18 @@
     <script>
     function searchResult(searchstr) {
         if (searchstr.length == 0) {
-            return
+            return;
         }
         // new object
-        let xhrequest = new XMLHttpRequest();
-        xhrequest.onreadystatechange = function() {
+        let xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var mbrs = JSON.parse(this.responseText); // turn json into javascipt
                 console.log(JSON.parse(this.responseText));
                 var tbl = document.getElementById("tblrooms"); // find the table in the html
                 // clear the table rows from earlier searches
                 var rowCount = tbl.rows.length;
-                for (var i = 0; i < mbrs.length; i++) {
+                for (var i = 1; i < rowCount; i++) {
                     // delete row
                     tbl.deleteRow(1);
                 }
@@ -62,6 +62,11 @@
                     var rt = mbrs[i]['roomtype'];
                     var b = mbrs[i]['beds'];
 
+                    //concatenate our actions urls into a single string
+                    var urls = '<a href="viewcustomer.php?id=' + mbrid + '">[view]</a>';
+                    urls += '<a href="editcustomer.php?id=' + mbrid + '">[edit]</a>';
+                    urls += '<a href="deletecustomer.php?id=' + mbrid + '">[delete]</a>';
+
                     //create the table. a table row with four cells.
                     tr = tbl.insertRow(-1);
                     var tabCell = tr.insertCell(-1);
@@ -72,17 +77,32 @@
                     tabCell.innerHTML = rt;
                     var tabCell = tr.insertCell(-1);
                     tabCell.innerHTML = b;
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = urls; //action URLS  
                 }
             }
         }
         //  open connection
-        xhrequest.open("GET", "roomsearch.php?sq=" + searchstr, true);
-        xhrequest.responseType = 'json';
+        xmlhttp.open("GET", "roomsearch.php?sq=" + searchstr, true);
+
         // send request to the server 
-        xhrequest.send();
+        xmlhttp.send();
+
+
+    }
+    xmlhttp.onload = function() {
+        alert('response loaded');
+    }
+    xmlhttp.onerror = function() {
+        alert("Connection error");
+    }
+
+    xmlhttp.onprogress = function(event) {
+        alert("in progress");
     }
     </script>
     <!-- this page is for the customer to make a booking. it is grouped into two parts. make a booking and a search for room availability -->
+</head>
 
 <body>
     <?php
@@ -260,8 +280,7 @@
     <h2>Search for room availability</h2>
     <!-- the form. two date pickers to set the range of the search and a button to submit the results. both date pickers are required, this will set the data range provide to the table -->
     <fieldset>
-        <form method="$_POST"
-            action="makeabooking.php">
+        <form>
             <p>
                 <label for="startdate">Start date:</label>
                 <input class="datepicker"
@@ -292,6 +311,7 @@
                     <th>Room name</th>
                     <th>Room type</th>
                     <th>Beds</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
         </table>

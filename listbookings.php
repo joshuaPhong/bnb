@@ -26,7 +26,7 @@ $result = mysqli_query($DBC, $query);
 $rowcount = mysqli_num_rows($result);
 ?>
 <h1>Current Bookings</h1>
-<h2><a href='makeabooking.php'>[Make A Booking]</a><a href="index.php">[Return to main page]</a></h2>
+<h2><a href='makeabooking-mk1.php'>[Make A Booking]</a><a href="index.php">[Return to main page]</a></h2>
 <table border="1">
     <thead>
         <tr>

@@ -8,17 +8,17 @@ $sq = $_GET['sq'];
 $searchresult = '';
 if (isset($sq) and !empty($sq) and strlen($sq) < 31) {
     $sq = strtolower($sq);
-//prepare a query and send it to the server using our search string as a wildcard on surname
+    //prepare a query and send it to the server using our search string as a wildcard on surname
     $query = "SELECT customerID,firstname,lastname FROM customer WHERE lastname LIKE '$sq%' ORDER BY lastname";
     $result = mysqli_query($db_connection, $query);
-    $rowcount = mysqli_num_rows($result); 
-        //makes sure we have customers
-    if ($rowcount > 0) {  
-        $rows=[]; //start an empty array
-        
+    $rowcount = mysqli_num_rows($result);
+    //makes sure we have customers
+    if ($rowcount > 0) {
+        $rows = []; //start an empty array
+
         //append each row in the query result to our empty array until there are no more results                    
-        while ($row = mysqli_fetch_assoc($result)) {            
-            $rows[] = $row; 
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = $row;
         }
         //take the array of our 1 or more customers and turn it into a JSON text
         $searchresult = json_encode($rows);

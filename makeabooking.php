@@ -8,7 +8,39 @@ $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
 if (mysqli_connect_errno()) {
     echo  "Error: Unable to connect to MySQL. " . mysqli_connect_error();
     exit;
-};
+}
+if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] == 'Add')) {
+
+    $error = 0; // set an error flag
+    $msg = 'Error: ';
+
+    $checkin = cleanInput($_POST['checkindate']);
+    $checkout = cleanInput($_POST['checkoutdate']);
+    $extras = cleanInput($_POST['extras']);
+    $phone = cleanInput($_POST['phone']);
+    $customerID = cleanInput('customerID');
+    $roomID = cleanInput($_POST['room']);
+
+    //role - not in the form so declared here
+    $role = 1;
+
+    // save the member data if the error flag is still clear
+    if ($error == 0) {
+        $query = "INSERT INTO booking (checkindate, checkoutdate, extras, phone, customerID, roomID) VALUES (?,?,?,?,?,?)";
+
+
+        $stmt = mysqli_prepare($db_connection, $query); //prepare the query
+        mysqli_stmt_bind_param($stmt, 'ssssii', $checkin, $checkout, $extras, $phone, $customerID, $roomID);
+
+
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        echo "<h2>booking saved</h2>";
+    } else {
+        echo "<h2>$msg</h2>";
+    }
+}
+
 
 ?>
 
@@ -47,6 +79,7 @@ echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
+
 ?>
 <h1>Make a Booking</h1>
 <h2>
@@ -56,27 +89,32 @@ echo '<div id="content">';
     </ul>
 </h2>
 <fieldset>
-    <form method="$_POST"
+    <form method="POST"
         action="./makeabooking.php">
         <p>
             <label for="room">Please select a room (name, type, beds):</label>
             <select name="room"
                 id="room">
                 <?php
+
                 //prepare a query and send it to the server
                 $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
                 $result = mysqli_query($db_connection, $query);
+                // global $roomID;
+                $roomID = ['roomID'];
                 $rowcount = mysqli_num_rows($result);
+
+
                 //makes sure we have rooms
                 if ($rowcount > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
-                        $roomID = $row['roomID'];
-                        echo "<option>" . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
+
+                        echo "<option value='$row[roomID]'>"  . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
                     }
                 }
-
                 mysqli_free_result($result); //free any memory used by the query
-                mysqli_close($db_connection); //close the connection once done
+
+
                 ?>
 
             </select>
@@ -84,13 +122,19 @@ echo '<div id="content">';
             <label id="req">*</label>
         </p>
         <p>
-            <label for="checkindate">Check In Date:</label>
-            <input type="text"
-                class="datepicker"
-                id="checkindate"
-                name="checkindate"
-                required>
-            <label id="req">*</label>
+            <input type="hidden"
+                name="customerID"
+                id="customerID"
+                value="1000">
+        </p>
+
+        <label for="checkindate">Check In Date:</label>
+        <input type="text"
+            class="datepicker"
+            id="checkindate"
+            name="checkindate"
+            required>
+        <label id="req">*</label>
         </p>
         <p>
             <label for="checkoutdate">Check Out Date:</label>
@@ -137,4 +181,5 @@ echo '<div id="content">';
 
 echo '</div></div>';
 include "footer.php";
+mysqli_close($db_connection); //close the connection once done
 ?>

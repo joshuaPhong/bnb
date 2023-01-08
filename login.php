@@ -4,11 +4,12 @@ include "header.php";
 include "checksession.php";
 
 include "menu.php";
-loginStatus(); //show the current login status
+
 echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
+loginStatus(); //show the current login status
 // access the database constants
 include "config.php";
 // connect to the database using the constants
@@ -18,26 +19,27 @@ if (mysqli_connect_errno()) {
     exit;
 }
 // if the login form has been filled in 
-if (isset($_POST['email'])) {
-    $email = $_POST['email'];
+if (isset($_POST['username'])) {
+    $username = $_POST['username'];
     $password = $_POST['password'];
     $hashpassword = password_hash($password, PASSWORD_DEFAULT);
 
     //prepare a query and send it to the server 
     $stmt = mysqli_stmt_init($db_connection);
     mysqli_stmt_prepare($stmt, "SELECT customerID, password, role FROM customer WHERE email=?");
-    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $customerID, $hashpassword, $role);
     mysqli_stmt_fetch($stmt);
     // this is where the password is checked 
     if (!$customerID) {
-        echo '<p class="error">Unable to find member with email!' . $email . '</p>';
+        echo '<p class="error">Unable to find member with email!' . $username . '</p>';
     } else {
         if (password_verify($password, $hashpassword)) {
             $_SESSION['loggedin'] = true;
-            $_SESSION['email'] = $email;
+            $_SESSION['username'] = $username;
             $_SESSION['role'] = $role;
+            $_SESSION['customerID'] = $customerID;
             echo '<p>Congratulations, you are logged in!</p>';
             echo "<p>your role: <?p>" . $role;
         } else {
@@ -69,10 +71,10 @@ mysqli_close($db_connection);
         action="login.php">
 
 
-        <label for="email">Email Address: </label>
+        <label for="username">Email Address: </label>
         <input type="email"
-            name="email"
-            id="email"
+            name="username"
+            id="username"
             size="30"
             required>
         <br>

@@ -11,12 +11,9 @@ if (isset($sq) and !empty($sq)) {
     $sq = strtolower($sq);
 
     // prepar the query
-    $query = "SELECT roomname, roomtype, beds, roomID
+    $query = "SELECT *
 FROM room
-WHERE roomID NOT IN (SELECT roomID
-FROM booking
-WHERE checkindate >= ['startdate']
-AND checkoutdate <= ['enddate'])";
+";
     $result = mysqli_query($db_connection, $query);
     $rowcount = mysqli_num_rows($result);
     // have we got a booking?
