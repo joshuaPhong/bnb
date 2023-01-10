@@ -9,6 +9,7 @@ if (mysqli_connect_errno()) {
     echo  "Error: Unable to connect to MySQL. " . mysqli_connect_error();
     exit;
 }
+
 if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] == 'Add')) {
 
     $error = 0; // set an error flag
@@ -18,11 +19,12 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
     $checkout = cleanInput($_POST['checkoutdate']);
     $extras = cleanInput($_POST['extras']);
     $phone = cleanInput($_POST['phone']);
-    $customerID = cleanInput('customerID');
-    $roomID = cleanInput($_POST['room']);
+    $customerID = $_SESSION['customerID'];
+    $roomID = filter_input(INPUT_POST, "roomID", FILTER_VALIDATE_INT);
 
-    //role - not in the form so declared here
-    $role = 1;
+    var_dump($checkin, $checkout, $extras, $phone, $customerID, $roomID);
+    // //role - not in the form so declared here
+    // $role = 1;
 
     // save the member data if the error flag is still clear
     if ($error == 0) {
@@ -45,6 +47,8 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
 ?>
 
 <head>
+    <!-- <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <!-- These are the jquery libraries. styling and javascript code -->
     <link rel="stylesheet"
         href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -64,6 +68,34 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
             minDate: 0,
             // same format as sql
             dateFormat: 'yy-mm-dd'
+        });
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
+
+        $('.dateFilter').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $('#btn_search').click(function() {
+            var from_date = $('#from_date').val();
+            var to_date = $('#to_date').val();
+            if (from_date != '' && to_date != '') {
+                $.ajax({
+                    url: "action.php",
+                    method: "POST",
+                    data: {
+                        from_date: from_date,
+                        to_date: to_date
+                    },
+                    success: function(data) {
+                        $('#purchase_order').html(data);
+                    }
+                });
+            } else {
+                alert("Please Select the Date");
+            }
         });
     });
     </script>
@@ -92,9 +124,9 @@ echo '<div id="content">';
     <form method="POST"
         action="./makeabooking.php">
         <p>
-            <label for="room">Please select a room (name, type, beds):</label>
-            <select name="room"
-                id="room">
+            <label for="roomID">Please select a room (name, type, beds):</label>
+            <select name="roomID"
+                id="roomID">
                 <?php
 
                 //prepare a query and send it to the server
@@ -121,12 +153,7 @@ echo '<div id="content">';
 
             <label id="req">*</label>
         </p>
-        <p>
-            <input type="hidden"
-                name="customerID"
-                id="customerID"
-                value="1000">
-        </p>
+
 
         <label for="checkindate">Check In Date:</label>
         <input type="text"
@@ -175,6 +202,70 @@ echo '<div id="content">';
         </p>
     </form>
 </fieldset>
+<?php
+$dbc = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
+if (mysqli_connect_errno()) {
+    echo  "Error: Unable to connect to MySQL. " . mysqli_connect_error();
+    exit;
+}
+$query = "SELECT * FROM room ORDER BY roomID";
+$result = mysqli_query($dbc, $query);
+?>
+<br>
+<br>
+<div class="container">
+    </br>
+    <div class="row">
+        <div class="col-md-2">
+            <input type="text"
+                name="from_date"
+                id="from_date"
+                class="form-control dateFilter"
+                placeholder="From Date" />
+        </div>
+        <div class="col-md-2">
+            <input type="text"
+                name="to_date"
+                id="to_date"
+                class="form-control dateFilter"
+                placeholder="To Date" />
+        </div>
+        <div class="col-md-2">
+            <input type="button"
+                name="search"
+                id="btn_search"
+                value="Search"
+                class="btn btn-primary" />
+        </div>
+    </div>
+    </br>
+    <div class="row">
+        <div class="col-md-8">
+            <div id="purchase_order">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="5%">Room ID</th>
+                        <th width="30%">Room Name</th>
+                        <th width="40%">Room Type</th>
+                        <th width="15%">Beds</th>
+                    </tr>
+                    <?php
+                    while ($row = mysqli_fetch_array($result)) {
+                    ?>
+                    <tr>
+                        <td><?php echo $row["roomID"]; ?></td>
+                        <td><?php echo $row["roomname"]; ?></td>
+                        <td><?php echo $row["roomtype"]; ?></td>
+                        <td><?php echo $row["beds"]; ?></td>
+                    </tr>
+                    <?php
+                    }
+                    ?>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <?php

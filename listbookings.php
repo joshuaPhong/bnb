@@ -2,14 +2,14 @@
 include "header.php";
 include "menu.php";
 include "checksession.php";
-loginStatus(); //show the current login status
+
 
 echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
-
-
+loginStatus(); //show the current login status
+checkUser();
 include "config.php"; //load in any variables
 $DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
 
@@ -26,7 +26,7 @@ $result = mysqli_query($DBC, $query);
 $rowcount = mysqli_num_rows($result);
 ?>
 <h1>Current Bookings</h1>
-<h2><a href='makeabooking-mk1.php'>[Make A Booking]</a><a href="index.php">[Return to main page]</a></h2>
+<h2><a href='makeabooking.php'>[Make A Booking]</a><a href="index.php">[Return to main page]</a></h2>
 <table border="1">
     <thead>
         <tr>

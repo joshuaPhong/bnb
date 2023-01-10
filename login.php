@@ -40,14 +40,12 @@ if (isset($_POST['submit'])) {
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $role;
             $_SESSION['customerID'] = $customerID;
-            echo '<p>Congratulations, you are logged in!</p>';
-            echo "<p>your role: <?p>" . $role;
         } else {
             echo '<p>Username/password combination is wrong!</p>';
         }
     }
     loginStatus(); //show the current login status
-    echo '<p><a href="index.php">Return to the menu</a></p>';
+    echo '<h1><a href="index.php">[Return to the maim menu]</a></h1>';
 }
 if (isset($_POST['logout'])) {
     logout();
@@ -68,7 +66,7 @@ mysqli_close($db_connection);
         content="IE=edge">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login Page</title>
 </head>
 
 <body>
