@@ -10,7 +10,7 @@ session_start();
 
 function isAdmin()
 {
-    if (($_SESSION['loggedin'] == 1) and ($_SESSION['customerid'] == 1))
+    if (($_SESSION['loggedin'] == true) and ($_SESSION['role'] == 9))
         return TRUE;
     else
         return FALSE;
