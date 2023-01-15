@@ -11,7 +11,7 @@ echo '<div id="content">';
 loginStatus(); //show the current login status
 checkUser();
 include "config.php"; //load in any variables
-$DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
+$DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE); // connect to the database
 
 
 //check if the connection was good
@@ -25,8 +25,10 @@ $query = 'SELECT * FROM booking, room, customer WHERE booking.roomID = room.room
 $result = mysqli_query($DBC, $query);
 $rowcount = mysqli_num_rows($result);
 ?>
+<!-- page heading and anchors -->
 <h1>Current Bookings</h1>
 <h2><a href='makeabooking.php'>[Make A Booking]</a><a href="index.php">[Return to main page]</a></h2>
+<!-- create a table  -->
 <table border="1">
     <thead>
         <tr>
@@ -37,7 +39,7 @@ $rowcount = mysqli_num_rows($result);
     </thead>
     <?php
 
-    //makes sure we have bookings
+    //makes sure we have bookings and then loop through the bookings with our $result atrray
     if ($rowcount > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $id = $row['bookingID'];
@@ -48,7 +50,6 @@ $rowcount = mysqli_num_rows($result);
             if (isAdmin()) {
                 echo         '<a href="editbookings.php?id=' . $id . '">[edit]</a>';
                 echo         '<a href="deletebookings.php?id=' . $id . '">[delete]</a>';
-                echo '<a href="reviews.php?id=' . $id . '">[manage reviews]</a></td>';
             }
             echo '</tr>' . PHP_EOL;
         }
