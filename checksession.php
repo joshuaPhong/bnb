@@ -39,15 +39,15 @@ function checkUser()
 //just to show we are are logged in
 function loginStatus()
 {
-    $un = $_SESSION['username'];
+    $username = $_SESSION['username'];
     if ($_SESSION['loggedin'] == true)
-        echo "<h2>Logged in as $un</h2>";
+        echo "<h2>Logged in as $username</h2>";
     else
         echo "<h2>Logged out</h2>";
 }
 
 //log a user in
-function login($id, $username)
+function login($customerID, $username)
 {
     //simple redirect if a user tries to access a page they have not logged in to
     if ($_SESSION['loggedin'] == 0 and !empty($_SESSION['URI']))
@@ -58,7 +58,7 @@ function login($id, $username)
     }
 
     $_SESSION['loggedin'] = 1;
-    $_SESSION['customerid'] = $id;
+    $_SESSION['customerid'] = $customerID;
     $_SESSION['username'] = $username;
     $_SESSION['URI'] = '';
     header('Location: ' . $uri, true, 303);

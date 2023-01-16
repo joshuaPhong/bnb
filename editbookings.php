@@ -1,3 +1,9 @@
+<?php
+session_start();
+include "checksession.php";
+checkUser();
+
+?>
 <!DOCTYPE HTML>
 <html>
 
@@ -36,15 +42,15 @@
 
     <?php
     include "header.php";
-    include "checksession.php";
+
     include "cleaninput.php";
     include "config.php"; //load in any variables
     include "menu.php";
 
 
     echo '<div id="site_content">';
-    loginStatus(); //show the current login status
-    checkUser();
+
+
     include "sidebar.php";
 
     //  connect to the database
@@ -110,7 +116,7 @@
             echo "<h2>$msg</h2>";
         }
     }
-
+            loginStatus(); //show the current login status
     ?>
 
     <h1>Update the booking details</h1>
