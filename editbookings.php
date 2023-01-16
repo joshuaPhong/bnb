@@ -35,11 +35,22 @@
 <body>
 
     <?php
-    include "config.php"; //load in any variables
+    include "header.php";
+    include "checksession.php";
     include "cleaninput.php";
+    include "config.php"; //load in any variables
+    include "menu.php";
 
+
+    echo '<div id="site_content">';
+    loginStatus(); //show the current login status
+    checkUser();
+    include "sidebar.php";
+
+    //  connect to the database
     $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
     $error = 0;
+    // chevck the connection
     if (mysqli_connect_errno()) {
         echo "Error: Unable to connect to MySQL. " . mysqli_connect_error();
         exit; //stop processing the page further
@@ -68,12 +79,16 @@
         }
         //roomname
         $roomname = cleanInput($_POST['roomname']);
-        //roomtype
-        $roomtype = cleanInput($_POST['roomtype']);
-        //beds
-        $beds = cleanInput($_POST['beds']);
+
         //checkindate
-        $checkindate = cleanInput($_POST['checkindate']);
+        if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
+            $checkindate = cleanInput($_POST['checkindate']);
+        } else {
+            $error++; //bump the error flag
+            $msg .= 'Invalid booking ID '; //append error message
+            $id = 0;
+        }
+
         //checkoutdate
         $checkoutdate = cleanInput($_POST['checkoutdate']);
         // phone
@@ -85,9 +100,9 @@
 
         //save the room data if the error flag is still clear and room id is > 0
         if ($error == 0 and $id > 0) {
-            $query = "UPDATE booking, room SET room.roomname=?,roomtype=?,checkindate=?,checkoutdate=?,phone=?,extras=?,review=?,beds=? WHERE booking.bookingID=? and room.roomID = booking.roomID";
+            $query = "UPDATE booking, room SET checkindate=?,checkoutdate=?,phone=?,extras=?,review=? WHERE booking.bookingID=? and room.roomID = booking.roomID";
             $stmt = mysqli_prepare($db_connection, $query); //prepare the query
-            mysqli_stmt_bind_param($stmt, 'sssssssii', $roomname, $roomtype, $checkindate, $checkoutdate, $phone, $extras, $review, $beds,  $id);
+            mysqli_stmt_bind_param($stmt, 'sssssi', $checkindate, $checkoutdate, $phone, $extras, $review, $id);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             echo "<h2>Room details updated.</h2>";
@@ -95,64 +110,59 @@
             echo "<h2>$msg</h2>";
         }
     }
-    //locate the booking to edit by using the roomID
-    //we also include the room ID in our form for sending it back for saving the data
-    $query = 'SELECT room.roomname, roomtype, beds, checkindate, checkoutdate, phone, extras, review FROM booking, room WHERE Booking.roomID = room.roomID AND bookingid=' . $id;
-    $result = mysqli_query($db_connection, $query);
-    $rowcount = mysqli_num_rows($result);
-    if ($rowcount > 0) {
-        $row = mysqli_fetch_assoc($result);
-
 
     ?>
 
-    <h1>Booking Details Update</h1>
+    <h1>Update the booking details</h1>
     <h2><a href='listbookings.php'>[Return to the booking listing]</a><a href='index.php'>[Return to the main page]</a>
     </h2>
     <?php
-        echo "<legend>booking id# $id
+    echo "<legend>booking id# $id
     </legend>";
-        ?>
-
+    ?>
+    <br>
+    <br>
     <form method="POST"
         action="editbookings.php">
         <input type="hidden"
             name="id"
             value="<?php echo $id; ?>">
         <p>
-            <label for="roomname">Room name: </label>
-            <input type="text"
-                id="roomname"
-                name="roomname"
-                minlength="5"
-                maxlength="50"
-                value="<?php echo $row['roomname']; ?>"
-                required>
+            <label for="roomname">Room (Name, type, beds): </label>
+            <select name="roomname"
+                id="roomname">
+                <?php
+                //prepare a query and send it to the server
+                $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
+                $result = mysqli_query($db_connection, $query);
+                // global $roomID;
+                $roomID = ['roomID'];
+                $rowcount = mysqli_num_rows($result);
+
+
+                //makes sure we have rooms
+                if ($rowcount > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+
+                        echo "<option value='$row[roomname]'>"  . $row['roomname'] . ", " . $row['roomtype'] . ", " . $row['beds'] . "</option>";
+                    }
+                }
+
+                ?>
+            </select>
+            <?php
+            //locate the booking to edit by using the roomID
+            //we also include the room ID in our form for sending it back for saving the data
+            $query = 'SELECT room.roomname, roomtype, beds, checkindate, checkoutdate, phone, extras, review FROM booking, room WHERE Booking.roomID = room.roomID AND bookingid=' . $id;
+            $result = mysqli_query($db_connection, $query);
+            $rowcount = mysqli_num_rows($result);
+            if ($rowcount > 0) {
+                $row = mysqli_fetch_assoc($result);
+            ?>
         </p>
-        <p>
-            <label for="roomtype">Room type: </label>
-            <input type="radio"
-                id="roomtype"
-                name="roomtype"
-                value="S"
-                <?php echo $row['roomtype'] == 'S' ? 'Checked' : ''; ?>> Single
-            <input type="radio"
-                id="roomtype"
-                name="roomtype"
-                value="D"
-                <?php echo $row['roomtype'] == 'D' ? 'Checked' : ''; ?>> Double
-        </p>
-        <p>
-            <label for="beds">Sleeps (1-5): </label>
-            <input type="number"
-                id="beds"
-                name="beds"
-                min="1"
-                max="5"
-                value="1"
-                value="<?php echo $row['beds']; ?>"
-                required>
-        </p>
+
+
+
         <p>
             <label for="checkindate">Check in date</label>
             <input class="datepicker"
@@ -206,16 +216,19 @@
         <input type="submit"
             name="submit"
             value="Update">
-        <input type="reset"
-            name="reset"
-            value="Clear Form">
+        <a href="listbookings.php">[cancel]</a>
+        <p>
+
+        </p>
     </form>
     <?php
-    } else {
-        echo "<h2>Booking not found with that ID</h2>"; //simple error feedback
-    }
-    mysqli_close($db_connection); //close the connection once done
-    ?>
+            } else {
+                echo "<h2>Booking not found with that ID</h2>"; //simple error feedback
+            }
+            mysqli_close($db_connection); //close the connection once done
+            echo '</div>';
+            include "footer.php";
+?>
 </body>
 
 </html>

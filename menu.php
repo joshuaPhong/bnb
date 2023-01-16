@@ -15,6 +15,7 @@
                 <li><a href="/bnb/listbookings.php">Bookings</a></li>
                 <li><a href="/bnb/registercustomer.php">Register</a></li>
                 <li><a href="/bnb/login.php">Login</a></li>
+                <li><a href="/bnb/logout.php">Logout</li>
             </ul>
         </div>
     </div>

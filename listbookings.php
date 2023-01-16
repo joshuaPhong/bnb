@@ -1,7 +1,21 @@
 <?php
+session_start();
+include "checksession.php";
+checkUser();
+//  tried not have an or || satament for !isMember . did not work
+if (
+    (!isAdmin())
+    && (!isMember())
+) {
+    header('Location: http://localhost/bnb/login.php');
+    exit();
+}
+// if(){
+//         header('Location: http://localhost/bnb/login.php');
+//     exit();
+// }
 include "header.php";
 include "menu.php";
-include "checksession.php";
 
 
 echo '<div id="site_content">';
@@ -9,7 +23,8 @@ include "sidebar.php";
 
 echo '<div id="content">';
 loginStatus(); //show the current login status
-checkUser();
+
+
 include "config.php"; //load in any variables
 $DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE); // connect to the database
 

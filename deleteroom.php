@@ -10,11 +10,13 @@
     <?php
     include "header.php";
     include "checksession.php";
-
+    include "cleaninput.php";
     include "menu.php";
-    loginStatus(); //show the current login status
+
 
     echo '<div id="site_content">';
+    loginStatus(); //show the current login status
+    checkUser();
     include "sidebar.php";
     include "config.php"; //load in any variables
     $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
@@ -87,17 +89,12 @@
         echo "<dt>Room type:</dt><dd>" . $row['roomtype'] . "</dd>" . PHP_EOL;
         echo "<dt>Sleeps:</dt><dd>" . $row['beds'] . "</dd>" . PHP_EOL;
         echo "</dl></fieldset>" . PHP_EOL;
-    ?><form method="POST"
-        action="deleteroom.php">
-        <h2>Are you sure you want to delete this Room?</h2>
-        <input type="hidden"
-            name="id"
-            value="<?php echo $id; ?>">
-        <input type="submit"
-            name="submit"
-            value="Delete">
-        <a href="listrooms.php">[Cancel]</a>
-    </form>
+    ?><form method="POST" action="deleteroom.php">
+            <h2>Are you sure you want to delete this Room?</h2>
+            <input type="hidden" name="id" value="<?php echo $id; ?>">
+            <input type="submit" name="submit" value="Delete">
+            <a href="listrooms.php">[Cancel]</a>
+        </form>
     <?php
     } else {
         echo "<h2>No Room found, possibly deleted!</h2>"; //suitable feedback

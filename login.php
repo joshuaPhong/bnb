@@ -44,8 +44,8 @@ if (isset($_POST['submit'])) {
             echo '<p>Username/password combination is wrong!</p>';
         }
     }
-    loginStatus(); //show the current login status
-    echo '<h1><a href="index.php">[Return to the maim menu]</a></h1>';
+
+    echo '<h1><a href="index.php">[Return to the main menu]</a></h1>';
 }
 if (isset($_POST['logout'])) {
     logout();
@@ -62,50 +62,42 @@ mysqli_close($db_connection);
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible"
-        content="IE=edge">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
 </head>
 
 <body>
     <h1>Login Page</h1>
+    <?php
+    if ($_SESSION['loggedin'] == 1) {
+        loginStatus();
+    } else
+        echo " <h2>You are not logged in. Please log in</h2>
+    "
 
-    <form method="POST"
-        action="login.php">
+    ?>
+    <form method="POST" action="login.php">
 
 
         <label for="username">Email Address: </label>
-        <input type="email"
-            name="username"
-            id="username"
-            size="30"
-            required>
+        <input type="email" name="username" id="username" size="30" required>
         <br>
         <br>
         <label for="password">Password</label>
-        <input type="password"
-            name="password"
-            id="password"
-            size="15"
-            min="10"
-            max="30"
-            required>
+        <input type="password" name="password" id="password" size="15" min="10" max="30" required>
         <br>
         <br>
-        <input type="submit"
-            name="submit"
-            value="Login">
+        <input type="submit" name="submit" value="Login">
 
     </form>
     <br>
-    <form action="login.php"
-        method="post">
-        <input type="submit"
-            name="logout"
-            value="logout">
+    <form action="login.php" method="post">
+        <input type="submit" name="logout" value="logout">
     </form>
+    <br><br>
+    <h2>If you are not a member, please register</h2>
+    <a href="registercustomer.php">[Register]</a>
 </body>
 
 </html>

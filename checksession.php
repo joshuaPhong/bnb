@@ -16,12 +16,19 @@ function isAdmin()
         return FALSE;
 }
 
+function isMember()
+{
+    if (($_SESSION['loggedin']  = true) and ($_SESSION['role']  == 1))
+        return true;
+    else return false;
+}
+
 //function to check if the user is logged else send to the login page 
 function checkUser()
 {
     return true;
     $_SESSION['URI'] = '';
-    if ($_SESSION['loggedin'] == 1)
+    if ($_SESSION['loggedin'] == true)
         return TRUE;
     else {
         $_SESSION['URI'] = 'http://localhost' . $_SERVER['REQUEST_URI']; //save current url for redirect     

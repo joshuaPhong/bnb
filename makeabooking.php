@@ -1,8 +1,15 @@
 <?php
 // start a session. for the interpage data
 session_start();
+
 include "config.php"; //load in any variables
 include "cleaninput.php"; // for use in data validation befor sending to the database
+include "checksession.php";
+checkUser();
+if ((!isMember())) {
+    header('Location: http://localhost/bnb/login.php');
+    exit();
+}
 // make the db connection
 $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
 if (mysqli_connect_errno()) {
@@ -102,7 +109,7 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
     </script>
 </head>
 <?php
-include "checksession.php";
+
 // html metadata
 include "header.php";
 include "menu.php";

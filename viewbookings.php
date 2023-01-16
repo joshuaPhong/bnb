@@ -3,13 +3,14 @@
 include "header.php";
 include "menu.php";
 include "checksession.php";
-//loginStatus(); 
-loginStatus(); //show the current login status
-//checkUser();
+
 echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
+
+loginStatus(); //show the current login status
+checkUser();
 ?>
 <html>
 
@@ -71,3 +72,6 @@ echo '<div id="content">';
 </body>
 
 </html>
+<?php
+echo '</div></div>';
+include 'footer.php';

@@ -290,3 +290,11 @@ table tr td
 { background: #F0EFE2;
   color: #47433F;
   border-top: 1px solid #FFF;}
+
+  input:invalid{
+    border: 2px soli red;
+  }
+
+  input:valid{
+    border: 2px solid green;
+  }

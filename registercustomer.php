@@ -2,17 +2,12 @@
 session_start();
 include "header.php";
 include "checksession.php";
-checkUser();
-
 include "menu.php";
-
-
 echo '<div id="site_content">';
 include "sidebar.php";
-
 echo '<div id="content">';
 loginStatus(); //show the current login status
-
+checkUser();
 include "config.php"; //load in any variables
 include "cleaninput.php";
 
@@ -112,6 +107,7 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
         <input type="email"
             id="email"
             name="email"
+            minlength="5"
             maxlength="100"
             size="50"
             required>

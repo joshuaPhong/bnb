@@ -2,12 +2,14 @@
 include "header.php";
 include "menu.php";
 include "checksession.php";
-loginStatus(); //show the current login status
+
 
 echo '<div id="site_content">';
 include "sidebar.php";
 
 echo '<div id="content">';
+loginStatus(); //show the current login status
+checkUser();
 
 
 include "config.php"; //load in any variables

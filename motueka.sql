@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS customer (
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
   email varchar(100) NOT NULL,
+  role tinyint(10) default 0, 
   password varchar(40) NOT NULL default '.',
   PRIMARY KEY (customerID)
 ) AUTO_INCREMENT=1;

@@ -2,21 +2,23 @@
 <html>
 
 <head>
-    <title>Edit a room</title>
+  <title>Edit a room</title>
 </head>
 
 <body>
 
-    <?php
+  <?php
   include "config.php"; //load in any variables
   include "cleaninput.php";
   include "header.php";
   include "checksession.php";
   include "menu.php";
-  loginStatus(); //show the current login status
-  echo '<div id="site_content">';
-  include "sidebar.php";
 
+  echo '<div id="site_content">';
+
+  include "sidebar.php";
+  loginStatus(); //show the current login status
+  checkUser();
   $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
   $error = 0;
   if (mysqli_connect_errno()) {
@@ -78,62 +80,28 @@
     <h1>Room Details Update</h1>
     <h2><a href='listrooms.php'>[Return to the room listing]</a><a href='index.php'>[Return to the main page]</a></h2>
 
-    <form method="POST"
-        action="editroom.php">
-        <input type="hidden"
-            name="id"
-            value="<?php echo $id; ?>">
-        <p>
-            <label for="roomname">Room name: </label>
-            <input type="text"
-                id="roomname"
-                name="roomname"
-                minlength="5"
-                maxlength="50"
-                size="50"
-                value="<?php echo $row['roomname']; ?>"
-                required>
-        </p>
-        <p>
-            <label for="description">Description: </label>
-            <input type="text"
-                id="description"
-                name="description"
-                size="50"
-                minlength="5"
-                maxlength="100"
-                value="<?php echo $row['description']; ?>"
-                required>
-        </p>
-        <p>
-            <label for="roomtype">Room type: </label>
-            <input type="radio"
-                id="roomtype"
-                name="roomtype"
-                value="S"
-                <?php echo $row['roomtype'] == 'S' ? 'Checked' : ''; ?>> Single
-            <input type="radio"
-                id="roomtype"
-                name="roomtype"
-                value="D"
-                <?php echo $row['roomtype'] == 'D' ? 'Checked' : ''; ?>> Double
-        </p>
-        <p>
-            <label for="beds">Sleeps (1-5): </label>
-            <input type="number"
-                id="beds"
-                name="beds"
-                min="1"
-                max="5"
-                value="1"
-                value="<?php echo $row['beds']; ?>"
-                required>
-        </p>
-        <input type="submit"
-            name="submit"
-            value="Update">
+    <form method="POST" action="editroom.php">
+      <input type="hidden" name="id" value="<?php echo $id; ?>">
+      <p>
+        <label for="roomname">Room name: </label>
+        <input type="text" id="roomname" name="roomname" minlength="5" maxlength="50" size="50" value="<?php echo $row['roomname']; ?>" required>
+      </p>
+      <p>
+        <label for="description">Description: </label>
+        <input type="text" id="description" name="description" size="50" minlength="5" maxlength="100" value="<?php echo $row['description']; ?>" required>
+      </p>
+      <p>
+        <label for="roomtype">Room type: </label>
+        <input type="radio" id="roomtype" name="roomtype" value="S" <?php echo $row['roomtype'] == 'S' ? 'Checked' : ''; ?>> Single
+        <input type="radio" id="roomtype" name="roomtype" value="D" <?php echo $row['roomtype'] == 'D' ? 'Checked' : ''; ?>> Double
+      </p>
+      <p>
+        <label for="beds">Sleeps (1-5): </label>
+        <input type="number" id="beds" name="beds" min="1" max="5" value="1" value="<?php echo $row['beds']; ?>" required>
+      </p>
+      <input type="submit" name="submit" value="Update">
     </form>
-    <?php
+  <?php
   } else {
     echo "<h2>room not found with that ID</h2>"; //simple error feedback
   }

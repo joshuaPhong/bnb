@@ -1,4 +1,7 @@
-<!DOCTYPE HTML>
+<?php
+session_start();
+?>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -6,10 +9,19 @@
 </head>
 
 <body>
-
     <?php
+
+    include "header.php";
+    include "checksession.php";
     include "config.php"; //load in any variables
     include "cleaninput.php"; // cleans up form input
+    include "menu.php";
+    echo '<div id="site_content">';
+    include "sidebar.php";
+
+    loginStatus(); //show the current login status
+    checkUser();
+    echo '<div id="content">';
     // connect to the datacase
     $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
     //check if the connection was good
@@ -61,6 +73,7 @@
     $result = mysqli_query($db_connection, $query);
     $rowcount = mysqli_num_rows($result);
     ?>
+    <!-- ancchors for the page -->
     <h2><a href='listbookings.php'>[Return to the Bookings listing]</a><a href='index.php'>[Return to the main page]</a>
     </h2>
     <?php
@@ -82,7 +95,7 @@
         <input type="submit"
             name="submit"
             value="Delete">
-        <a href="listbookings.php">[Cancel]</a>
+
     </form>
     <?php
     } else {
@@ -95,3 +108,7 @@
 </body>
 
 </html>
+<?php
+echo '</div></div>';
+include "footer.php";
+?>
