@@ -1,8 +1,8 @@
 <?php
 session_start();
 include "checksession.php";
-checkUser();
-//  tried not have an or || satament for !isMember . did not work
+checkUser(); // is the user logged in else redirect
+//  check to see if role is admin or member. redirect if not.
 if (
     (!isAdmin())
     && (!isMember())
@@ -10,32 +10,21 @@ if (
     header('Location: http://localhost/bnb/login.php');
     exit();
 }
-// if(){
-//         header('Location: http://localhost/bnb/login.php');
-//     exit();
-// }
 include "header.php";
 include "menu.php";
-
-
 echo '<div id="site_content">';
 include "sidebar.php";
-
 echo '<div id="content">';
 loginStatus(); //show the current login status
-
-
 include "config.php"; //load in any variables
 $DBC = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE); // connect to the database
-
-
 //check if the connection was good
 if (mysqli_connect_errno()) {
     echo "Error: Unable to connect to MySQL. " . mysqli_connect_error();
     exit; //stop processing the page further
 }
 
-//prepare a query and send it to the server
+//query for the view list. and send it to the server
 $query = 'SELECT * FROM booking, room, customer WHERE booking.roomID = room.roomID AND booking.customerID = customer.customerID ORDER BY bookingID';
 $result = mysqli_query($DBC, $query);
 $rowcount = mysqli_num_rows($result);

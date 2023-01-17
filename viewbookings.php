@@ -1,5 +1,5 @@
-<!DOCTYPE HTML>
 <?php
+session_start();
 include "header.php";
 include "menu.php";
 include "checksession.php";
@@ -12,6 +12,7 @@ echo '<div id="content">';
 loginStatus(); //show the current login status
 checkUser();
 ?>
+<!DOCTYPE HTML>
 <html>
 
 <head>
@@ -50,7 +51,7 @@ checkUser();
     </h2>
 
     <?php
-    //makes sure we have a booking
+    //makes sure we have a booking. and echo to the page.
     if ($rowcount > 0) {
         echo "<fieldset><legend>Booking detail #$id</legend><dl>";
         $row = mysqli_fetch_assoc($result);

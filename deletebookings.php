@@ -13,6 +13,7 @@ session_start();
 
     include "header.php";
     include "checksession.php";
+    checkUser();
     include "config.php"; //load in any variables
     include "cleaninput.php"; // cleans up form input
     include "menu.php";
@@ -20,7 +21,7 @@ session_start();
     include "sidebar.php";
 
     loginStatus(); //show the current login status
-    checkUser();
+
     echo '<div id="content">';
     // connect to the datacase
     $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
@@ -86,17 +87,12 @@ session_start();
         echo "<dt>Check in date:</dt><dd>" . $row['checkindate'] . "</dd>" . PHP_EOL;
         echo "<dt>Checkoutdate:</dt><dd>" . $row['checkoutdate'] . "</dd>" . PHP_EOL;
         echo "</dl></fieldset>" . PHP_EOL;
-    ?><form method="POST"
-        action="deletebookings.php">
-        <h2>Are you sure you want to delete this Booking?</h2>
-        <input type="hidden"
-            name="id"
-            value="<?php echo $id; ?>">
-        <input type="submit"
-            name="submit"
-            value="Delete">
+    ?><form method="POST" action="deletebookings.php">
+            <h2>Are you sure you want to delete this Booking?</h2>
+            <input type="hidden" name="id" value="<?php echo $id; ?>">
+            <input type="submit" name="submit" value="Delete">
 
-    </form>
+        </form>
     <?php
     } else {
         echo "<h2>No Room found, possibly deleted!</h2>"; //suitable feedback

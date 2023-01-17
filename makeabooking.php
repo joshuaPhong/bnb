@@ -88,10 +88,48 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
     $error = 0; // set an error flag
     $msg = 'Error: ';
 
-    $checkin = cleanInput($_POST['checkindate']);
-    $checkout = cleanInput($_POST['checkoutdate']);
-    $extras = cleanInput($_POST['extras']);
-    $phone = cleanInput($_POST['phone']);
+    //checkindate
+    if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
+        $checkin = cleanInput($_POST['checkindate']);
+    } else {
+        $error++; //bump the error flag
+        $msg .= 'Invalid Date '; //append error message
+        $id = 0;
+    }
+
+    //checkoutdate
+    if (
+        isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])
+    ) {
+        $checkout = cleanInput($_POST['checkoutdate']);
+    } else {
+        $error++; //bump the error flag
+        $msg .= 'Invalid Date '; //append error message
+        $id = 0;
+    }
+
+    // phone
+    if (
+        isset($_POST['phone']) and !empty($_POST['phone'])
+    ) {
+        $phone = cleanInput($_POST['phone']);
+    } else {
+        $error++; //bump the error flag
+        $msg .= 'Invalid Date '; //append error message
+        $id = 0;
+    }
+
+    // extras
+    if (
+        isset($_POST['extras']) and is_string($_POST['extras'])
+    ) {
+        $extras = cleanInput($_POST['extras']);
+    } else {
+        $error++; //bump the error flag
+        $msg .= 'Invalid input '; //append error message
+        $id = 0;
+    }
+
     $customerID = $_SESSION['customerID'];
     $roomID = filter_input(INPUT_POST, "roomID", FILTER_VALIDATE_INT);
     $username = $_SESSION['username'];
@@ -126,7 +164,7 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
 
 echo '<div id="content">';
 loginStatus(); //show the current login status
-login($id, $username);
+// login($id, $username);
 ?>
 <h1>Make a Booking</h1>
 <h2>
@@ -147,8 +185,8 @@ login($id, $username);
                 //prepare a query and send it to the server
                 $query = 'SELECT roomID,roomname,roomtype, beds FROM room';
                 $result = mysqli_query($db_connection, $query);
-                // global $roomID;
-                $roomID = ['roomID'];
+
+                //            $roomID = ['roomID'];
                 $rowcount = mysqli_num_rows($result);
 
 

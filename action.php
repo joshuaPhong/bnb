@@ -10,7 +10,7 @@ $fromdate = $_POST['from_date'];
 
 if (isset($_POST["from_date"], $_POST["to_date"])) {
     $orderData = "";
-    $query = "select * from room where roomID not in (select roomID from booking where checkindate <= '$fromdate' and checkoutdate >= '$todate')";
+    $query = "select * from room where roomID not in (select roomID from booking where checkindate >= '$fromdate' and checkoutdate <= '$todate')";
     $result = mysqli_query($db_connection, $query);
 
     $orderData .= '
