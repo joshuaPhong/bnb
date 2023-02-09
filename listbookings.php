@@ -36,7 +36,7 @@ $rowcount = mysqli_num_rows($result);
 <table border="1">
     <thead>
         <tr>
-            <th>Booking (room, dates)</th>
+            <th>Booking (Id, name, dates)</th>
             <th>Customer </th>
             <th>Action</th>
         </tr>
@@ -47,7 +47,7 @@ $rowcount = mysqli_num_rows($result);
     if ($rowcount > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $id = $row['bookingID'];
-            echo '<tr><td>' . $row['roomname'] . ", " . $row['checkindate'] . ", " . $row['checkoutdate'] . '</td><td>' . $row['lastname'] . ", " . $row['firstname'] . '</td>';
+            echo '<tr><td>' . $id . ", " . $row['roomname'] . ", " . $row['checkindate'] . ", " . $row['checkoutdate'] . '</td><td>' . $row['lastname'] . ", " . $row['firstname'] . '</td>';
             echo     '<td><a href="viewbookings.php?id=' . $id . '">[view]</a>';
 
             //check if we have permission to modify data

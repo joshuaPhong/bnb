@@ -4,10 +4,12 @@ session_start();
 
 include "config.php"; //load in any variables
 include "cleaninput.php"; // for use in data validation befor sending to the database
+include "validatedate.php";
 include "checksession.php";
 checkUser();
 if ((!isMember()) and (!isAdmin())) {
-    header('Location: http://localhost/bnb/login.php');
+    header('Location: 
+    http://joshuawebapp.unaux.com/bnb/login.php');
     exit();
 }
 // make the db connection
@@ -23,49 +25,54 @@ if (mysqli_connect_errno()) {
     <!-- <link rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <!-- These are the jquery libraries. styling and javascript code -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="
+        crossorigin="anonymous"></script>
     <script>
-        // this is the jquery datepicker function. uses the class .datepicker 
-        // min date sets the minimum the date can be to today.
-        // no booking in the past \
-        // we should validate for checkout > checkin
-        $(function() {
-            $(".datepicker").datepicker({
-                minDate: 0,
-                // same format as sql
-                dateFormat: 'yy-mm-dd'
-            });
+    // this is the jquery datepicker function. uses the class .datepicker 
+    // min date sets the minimum the date can be to today.
+    // no booking in the past \
+    // we should validate for checkout > checkin
+    $(function() {
+        $(".datepicker").datepicker({
+            minDate: 0,
+            // same format as sql
+            dateFormat: 'yy-mm-dd'
         });
+    });
     </script>
     <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
 
-            $('.dateFilter').datepicker({
-                dateFormat: "yy-mm-dd"
-            });
-
-            $('#btn_search').click(function() {
-                var from_date = $('#from_date').val();
-                var to_date = $('#to_date').val();
-                if (from_date != '' && to_date != '') {
-                    $.ajax({
-                        url: "action.php",
-                        method: "POST",
-                        data: {
-                            from_date: from_date,
-                            to_date: to_date
-                        },
-                        success: function(data) {
-                            $('#purchase_order').html(data);
-                        }
-                    });
-                } else {
-                    alert("Please Select the Date");
-                }
-            });
+        $('.dateFilter').datepicker({
+            dateFormat: "yy-mm-dd"
         });
+
+        $('#btn_search').click(function() {
+            var from_date = $('#from_date').val();
+            var to_date = $('#to_date').val();
+            if (from_date != '' && to_date != '') {
+                $.ajax({
+                    url: "action.php",
+                    method: "POST",
+                    data: {
+                        from_date: from_date,
+                        to_date: to_date
+                    },
+                    success: function(data) {
+                        $('#purchase_order').html(data);
+                    }
+                });
+            } else {
+                alert("Please Select the Date");
+            }
+        });
+    });
     </script>
 </head>
 <?php
@@ -85,7 +92,13 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
 
     //checkindate
     if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
-        $checkin = cleanInput($_POST['checkindate']);
+        if (validateDate($_POST['checkindate']) == true) {
+            $checkin = cleanInput($_POST['checkindate']);
+        } else {
+            $error++; //bump the error flag
+            $msg .= 'Invalid  Check In Date '; //append error message
+            $id = 0;
+        }
     } else {
         $error++; //bump the error flag
         $msg .= 'Invalid Date '; //append error message
@@ -96,7 +109,13 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
     if (
         isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])
     ) {
-        $checkout = cleanInput($_POST['checkoutdate']);
+        if (validateDate($_POST['checkoutdate']) == true) {
+            $checkout = cleanInput($_POST['checkoutdate']);
+        } else {
+            $error++; //bump the error flag
+            $msg .= 'Invalid  Check Out Date '; //append error message
+            $id = 0;
+        }
     } else {
         $error++; //bump the error flag
         $msg .= 'Invalid Date '; //append error message
@@ -169,10 +188,12 @@ loginStatus(); //show the current login status
     </ul>
 </h2>
 <fieldset>
-    <form method="POST" action="makeabooking.php">
+    <form method="POST"
+        action="makeabooking.php">
         <p>
             <label for="roomID">Please select a room (name, type, beds):</label>
-            <select name="roomID" id="roomID">
+            <select name="roomID"
+                id="roomID">
                 <?php
 
                 //prepare a query and send it to the server
@@ -202,28 +223,51 @@ loginStatus(); //show the current login status
 
 
         <label for="checkindate">Check In Date:</label>
-        <input type="text" class="datepicker" id="checkindate" name="checkindate" required>
+        <input type="text"
+            class="datepicker"
+            id="checkindate"
+            name="checkindate"
+            value="yyyy-mm-dd"
+            required>
         <label id="req">*</label>
         </p>
         <p>
             <label for="checkoutdate">Check Out Date:</label>
-            <input type="text" class="datepicker" id="checkoutdate" name="checkoutdate" required>
+            <input type="text"
+                class="datepicker"
+                id="checkoutdate"
+                name="checkoutdate"
+                value="yyyy-mm-dd"
+                required>
             <label id="req">*</label>
         </p>
         <p>
             <label for="phone">Mobile Phone Number:</label>
-            <input type="tel" id="phone" name="phone" placeholder="##########" pattern="[0-9]{10}" required>
+            <input type="tel"
+                id="phone"
+                name="phone"
+                placeholder="##########"
+                pattern="[0-9]{10}"
+                required>
             <label id="req">*</label>
         </p>
         <p>
             <label for="extras">Booking Extras:</label>
-            <textarea type="text" id="extras" name="extras" maxlength="1000" rows="5" cols="20"></textarea>
+            <textarea type="text"
+                id="extras"
+                name="extras"
+                maxlength="1000"
+                rows="5"
+                cols="20"></textarea>
         </p>
         <p>
             <!-- a button to submit form data to the DB -->
-            <input type="submit" name="submit" value="Add">
+            <input type="submit"
+                name="submit"
+                value="Add">
             <!-- a button to clear the form and reset it to the defaults -->
-            <input type="reset" value="Clear Form">
+            <input type="reset"
+                value="Clear Form">
         </p>
     </form>
 </fieldset>
@@ -242,13 +286,27 @@ $result = mysqli_query($dbc, $query);
     </br>
     <div class="row">
         <div class="col-md-2">
-            <input type="text" name="from_date" id="from_date" class="form-control dateFilter" placeholder="From Date" />
+            <label for="from_date">Search From: </label>
+            <input type="text"
+                name="from_date"
+                id="from_date"
+                class="form-control dateFilter"
+                value="yyyy-mm-dd" />
         </div>
         <div class="col-md-2">
-            <input type="text" name="to_date" id="to_date" class="form-control dateFilter" placeholder="To Date" />
+            <label for="to_date">Search To: </label>
+            <input type="text"
+                name="to_date"
+                id="to_date"
+                class="form-control dateFilter"
+                value="yyyy-mm-dd" />
         </div>
         <div class="col-md-2">
-            <input type="button" name="search" id="btn_search" value="Search" class="btn btn-primary" />
+            <input type="button"
+                name="search"
+                id="btn_search"
+                value="Search"
+                class="btn btn-primary" />
         </div>
     </div>
     </br>
@@ -265,12 +323,12 @@ $result = mysqli_query($dbc, $query);
                     <?php
                     while ($row = mysqli_fetch_array($result)) {
                     ?>
-                        <tr>
-                            <td><?php echo $row["roomID"]; ?></td>
-                            <td><?php echo $row["roomname"]; ?></td>
-                            <td><?php echo $row["roomtype"]; ?></td>
-                            <td><?php echo $row["beds"]; ?></td>
-                        </tr>
+                    <tr>
+                        <td><?php echo $row["roomID"]; ?></td>
+                        <td><?php echo $row["roomname"]; ?></td>
+                        <td><?php echo $row["roomtype"]; ?></td>
+                        <td><?php echo $row["beds"]; ?></td>
+                    </tr>
                     <?php
                     }
                     ?>

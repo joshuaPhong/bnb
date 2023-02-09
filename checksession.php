@@ -32,7 +32,7 @@ function checkUser()
         return TRUE;
     else {
         $_SESSION['URI'] = 'http://localhost' . $_SERVER['REQUEST_URI']; //save current url for redirect     
-        header('Location: http://localhost/bnb/login.php', true, 303);
+        header('Location: http://joshuawebapp.unaux.com/bnb/login.php', true, 303);
     }
 }
 
@@ -53,7 +53,7 @@ function login($customerID, $username)
     if ($_SESSION['loggedin'] == 0 and !empty($_SESSION['URI']))
         $uri = $_SESSION['URI'];
     else {
-        $_SESSION['URI'] =  'http://localhost/bnb/listcustomers.php';
+        $_SESSION['URI'] =  'http://joshuawebapp.unaux.com/bnb/listcustomers.php';
         $uri = $_SESSION['URI'];
     }
 
@@ -71,5 +71,5 @@ function logout()
     $_SESSION['customerid'] = -1;
     $_SESSION['username'] = '';
     $_SESSION['URI'] = '';
-    header('Location: http://localhost/bnb/index.php', true, 303);
+    header('Location: http://joshuawebapp.unaux.com/bnb/index.php', true, 303);
 }
