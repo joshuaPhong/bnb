@@ -9,7 +9,7 @@ include "checksession.php";
 checkUser();
 if ((!isMember()) and (!isAdmin())) {
     header('Location: 
-    http://joshuawebapp.unaux.com/bnb/login.php');
+    http://localhost/bnb/login.php');
     exit();
 }
 // make the db connection
@@ -93,33 +93,27 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
     //checkindate
     if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
         if (validateDate($_POST['checkindate']) == true) {
-            $checkin = cleanInput($_POST['checkindate']);
+            $checkindate = date_format(date_create(cleanInput($_POST['checkindate'])), "Y/m/d");
         } else {
             $error++; //bump the error flag
-            $msg .= 'Invalid  Check In Date '; //append error message
-            $id = 0;
+            $msg .= 'Invalid Check In Date: Use the Calendar '; //append error message
         }
     } else {
         $error++; //bump the error flag
-        $msg .= 'Invalid Date '; //append error message
-        $id = 0;
+        $msg .= 'Invalid Check in Date: Use the Calendar '; //append error message
     }
 
-    //checkoutdate
-    if (
-        isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])
-    ) {
+// checkoutdate
+    if (isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])) {
         if (validateDate($_POST['checkoutdate']) == true) {
-            $checkout = cleanInput($_POST['checkoutdate']);
+            $checkoutdate = date_format(date_create(cleanInput($_POST['checkoutdate'])), "Y/m/d");
         } else {
             $error++; //bump the error flag
-            $msg .= 'Invalid  Check Out Date '; //append error message
-            $id = 0;
+            $msg .= 'Invalid Check Out Date: Use the Calendar '; //append error message
         }
     } else {
         $error++; //bump the error flag
-        $msg .= 'Invalid Date '; //append error message
-        $id = 0;
+        $msg .= 'Invalid Check Out Date: Use the Calendar '; //append error message
     }
 
     // phone
@@ -129,7 +123,7 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
         $phone = cleanInput($_POST['phone']);
     } else {
         $error++; //bump the error flag
-        $msg .= 'Invalid Date '; //append error message
+        $msg .= 'Invalid Phone number '; //append error message
         $id = 0;
     }
 
@@ -140,7 +134,7 @@ if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] =
         $extras = cleanInput($_POST['extras']);
     } else {
         $error++; //bump the error flag
-        $msg .= 'Invalid input '; //append error message
+        $msg .= 'Invalid Input '; //append error message
         $id = 0;
     }
 
@@ -246,7 +240,7 @@ loginStatus(); //show the current login status
             <input type="tel"
                 id="phone"
                 name="phone"
-                placeholder="##########"
+                 placeholder="##########"
                 pattern="[0-9]{10}"
                 required>
             <label id="req">*</label>
@@ -283,23 +277,20 @@ $result = mysqli_query($dbc, $query);
 <br>
 <br>
 <div class="container">
-    </br>
     <div class="row">
         <div class="col-md-2">
             <label for="from_date">Search From: </label>
             <input type="text"
                 name="from_date"
                 id="from_date"
-                class="form-control dateFilter"
-                value="yyyy-mm-dd" />
+                class="form-control dateFilter"/>
         </div>
         <div class="col-md-2">
             <label for="to_date">Search To: </label>
             <input type="text"
                 name="to_date"
                 id="to_date"
-                class="form-control dateFilter"
-                value="yyyy-mm-dd" />
+                class="form-control dateFilter"/>
         </div>
         <div class="col-md-2">
             <input type="button"
@@ -309,7 +300,6 @@ $result = mysqli_query($dbc, $query);
                 class="btn btn-primary" />
         </div>
     </div>
-    </br>
     <div class="row">
         <div class="col-md-8">
             <div id="purchase_order">

@@ -1,11 +1,12 @@
 <?php
-session_start();
+
 include "header.php";
 include "checksession.php";
-checkUser();
 if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] == 'Logout')) {
-    logout();
-    session_destroy();
+
+logout();
+
+
 }
 
 include "menu.php";

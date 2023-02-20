@@ -1,7 +1,8 @@
 <?php
-session_start();
+// session_start();
 include "checksession.php";
-checkUser(); // is the user logged in else redirect
+checkUser();
+// is the user logged in else redirect
 //  check to see if role is admin or member. redirect if not.
 if (
     (!isAdmin())

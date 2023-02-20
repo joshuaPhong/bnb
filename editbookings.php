@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "checksession.php";
+include "validatedate.php";
 checkUser();
 
 ?>
@@ -56,7 +57,8 @@ checkUser();
     //  connect to the database
     $db_connection = mysqli_connect(DBHOST, DBUSER, DBPASSWORD, DBDATABASE);
     $error = 0;
-    // chevck the connection
+    $msg = 'Error: ';
+    // check the connection
     if (mysqli_connect_errno()) {
         echo "Error: Unable to connect to MySQL. " . mysqli_connect_error();
         exit; //stop processing the page further
@@ -73,8 +75,7 @@ checkUser();
     //the data was sent using a formtherefore we use the $_POST instead of $_GET
     //check if we are saving data first by checking if the submit button exists in the array
     if (isset($_POST['submit']) and !empty($_POST['submit']) and ($_POST['submit'] == 'Update')) {
-        // Some simple validatioon
-
+        // Some simple validation
         //bookingID (sent via a form it is a string not a number so we try a type conversion!)    
         if (isset($_POST['id']) and !empty($_POST['id']) and is_integer(intval($_POST['id']))) {
             $id = cleanInput($_POST['id']);
@@ -93,26 +94,29 @@ checkUser();
             $msg .= 'Invalid roomname '; //append error message
             $id = 0;
         }
-
-
-        //checkindate
+// checkindate
         if (isset($_POST['checkindate']) and !empty($_POST['checkindate'])) {
-            $checkindate = cleanInput($_POST['checkindate']);
+            if (validateDate($_POST['checkindate']) == true) {
+                $checkindate = date_format(date_create(cleanInput($_POST['checkindate'])), "Y/m/d");
+            } else {
+                $error++; //bump the error flag
+                $msg .= 'Invalid Check In Date '; //append error message
+            }
         } else {
             $error++; //bump the error flag
-            $msg .= 'Invalid Date '; //append error message
-            $id = 0;
+            $msg .= 'Invalid Check in Date '; //append error message
         }
-
-        //checkoutdate
-        if (
-            isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])
-        ) {
-            $checkoutdate = cleanInput($_POST['checkoutdate']);
+// checkoutdate
+        if (isset($_POST['checkoutdate']) and !empty($_POST['checkoutdate'])) {
+            if (validateDate($_POST['checkoutdate']) == true) {
+                $checkoutdate = date_format(date_create(cleanInput($_POST['checkoutdate'])), "Y/m/d");
+            } else {
+                $error++; //bump the error flag
+                $msg .= 'Invalid Check Out Date '; //append error message
+            }
         } else {
             $error++; //bump the error flag
-            $msg .= 'Invalid Date '; //append error message
-            $id = 0;
+            $msg .= 'Invalid Check Out Date '; //append error message
         }
 
         // phone

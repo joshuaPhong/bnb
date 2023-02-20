@@ -1,7 +1,9 @@
 <?php
-session_start();
-include "header.php";
+
+
 include "checksession.php";
+
+include "header.php";
 
 include "menu.php";
 
@@ -42,6 +44,8 @@ if (isset($_POST['submit'])) {
             $_SESSION['customerID'] = $customerID;
         } else {
             echo '<p>Username/password combination is wrong!</p>';
+
+
         }
     }
 
@@ -65,10 +69,12 @@ mysqli_close($db_connection);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+
 </head>
 
 <body>
     <h1>Login Page</h1>
+
     <?php
     if ($_SESSION['loggedin'] == 1) {
         loginStatus();

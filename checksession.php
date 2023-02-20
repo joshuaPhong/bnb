@@ -20,7 +20,8 @@ function isMember()
 {
     if (($_SESSION['loggedin']  = true) and ($_SESSION['role']  == 1))
         return true;
-    else return false;
+    else
+        return false;
 }
 
 //function to check if the user is logged else send to the login page 
@@ -36,14 +37,16 @@ function checkUser()
     }
 }
 
-//just to show we are are logged in
+//just to show we are logged in
 function loginStatus()
 {
-    $username = $_SESSION['username'];
-    if ($_SESSION['loggedin'] == true)
+
+    if ($_SESSION['loggedin']) {
+        $username = $_SESSION['username'];
         echo "<h2>Logged in as $username</h2>";
-    else
-        echo "<h2>Logged out</h2>";
+    }
+    elseif (!$_SESSION['loggedin'])
+         echo "<h2>Logged out</h2>";
 }
 
 //log a user in
@@ -53,7 +56,7 @@ function login($customerID, $username)
     if ($_SESSION['loggedin'] == 0 and !empty($_SESSION['URI']))
         $uri = $_SESSION['URI'];
     else {
-        $_SESSION['URI'] =  'http://joshuawebapp.unaux.com/bnb/listcustomers.php';
+        $_SESSION['URI'] =  'http://localhost/bnb/listcustomers.php';
         $uri = $_SESSION['URI'];
     }
 
@@ -67,9 +70,12 @@ function login($customerID, $username)
 //simple logout function
 function logout()
 {
-    $_SESSION['loggedin'] = 0;
-    $_SESSION['customerid'] = -1;
-    $_SESSION['username'] = '';
-    $_SESSION['URI'] = '';
-    header('Location: http://joshuawebapp.unaux.com/bnb/index.php', true, 303);
-}
+    session_start();
+
+   session_destroy();
+    $_SESSION = array();
+       header('Location: http://localhost/bnb/index.php', true, 303);
+        exit();
+
+    }
+
